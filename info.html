@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .info-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+        animation: fadeIn 1s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .info-hero {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.8) 0%, rgba(75, 0, 0, 0.9) 100%);
+        border-radius: 15px;
+        margin-bottom: 3rem;
+        animation: slideDown 0.8s ease-out;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .info-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .info-hero h1 {
+        font-size: 3rem;
+        color: #ffd700;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .info-hero p {
+        font-size: 1.3rem;
+        color: #d4af37;
+        position: relative;
+        z-index: 1;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .feature-card {
+        background: rgba(139, 0, 0, 0.3);
+        padding: 2rem;
+        border-radius: 10px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.8s ease-out backwards;
+    }
+
+    .feature-card:nth-child(1) { animation-delay: 0.2s; }
+    .feature-card:nth-child(2) { animation-delay: 0.4s; }
+    .feature-card:nth-child(3) { animation-delay: 0.6s; }
+    .feature-card:nth-child(4) { animation-delay: 0.8s; }
+    .feature-card:nth-child(5) { animation-delay: 1s; }
+    .feature-card:nth-child(6) { animation-delay: 1.2s; }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        border-color: rgba(212, 175, 55, 0.6);
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    }
+
+    .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: inline-block;
+        animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .feature-card:hover .feature-icon {
+        animation: spin 0.6s ease-in-out;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .feature-card h3 {
+        color: #ffd700;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card p {
+        color: #ccc;
+        line-height: 1.6;
+    }
+
+    .about-section {
+        background: rgba(139, 0, 0, 0.2);
+        padding: 3rem;
+        border-radius: 15px;
+        margin-bottom: 3rem;
+        border-left: 5px solid #d4af37;
+        animation: slideInLeft 1s ease-out;
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .about-section h2 {
+        color: #ffd700;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .about-section p {
+        color: #ccc;
+        line-height: 1.8;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    .cta-section {
+        text-align: center;
+        padding: 3rem;
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(139, 0, 0, 0.3) 100%);
+        border-radius: 15px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+    }
+
+    .cta-section h2 {
+        color: #ffd700;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+        color: #d4af37;
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-large {
+        display: inline-block;
+        padding: 1rem 3rem;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #1a0000;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        border: 2px solid #ffd700;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-large::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-large:hover::before {
+        width: 400px;
+        height: 400px;
+    }
+
+    .btn-large:hover {
+        transform: scale(1.1);
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
+    }
+
+    @media (max-width: 768px) {
+        .info-hero h1 {
+            font-size: 2rem;
+        }
+        
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="info-container">
+    <div class="info-hero">
+        <h1>About CityWok</h1>
+        <p>Your Gateway to Authentic Chinese Dining Experience</p>
+    </div>
+
+    <div class="about-section">
+        <h2>Welcome to CityWok</h2>
+        <p>
+            CityWok is your premier destination for authentic Chinese cuisine. With multiple locations across the city, 
+            we bring the rich flavors and traditions of Chinese cooking to your neighborhood.
+        </p>
+        <p>
+            Our reservation system makes it easy to secure your table at any of our restaurants. Whether you're planning 
+            a romantic dinner, family gathering, or business lunch, we've got you covered.
+        </p>
+        <p>
+            Experience the perfect blend of traditional recipes and modern dining convenience. Book your table online, 
+            choose your preferred location, and let us take care of the rest.
+        </p>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">&#127836;</div>
+            <h3>Authentic Cuisine</h3>
+            <p>Traditional Chinese recipes prepared by expert chefs using the finest ingredients and time-honored cooking techniques.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">&#128205;</div>
+            <h3>Multiple Locations</h3>
+            <p>Conveniently located restaurants across the city, making it easy to enjoy our food wherever you are.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">&#128197;</div>
+            <h3>Easy Reservations</h3>
+            <p>Book your table online in seconds. Choose your date, time, and number of guests with our simple reservation system.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">&#128104;&#8205;&#127859;</div>
+            <h3>Expert Chefs</h3>
+            <p>Our experienced chefs bring years of culinary expertise to create memorable dining experiences.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">&#127881;</div>
+            <h3>Special Events</h3>
+            <p>Perfect venue for celebrations, business meetings, and special occasions with customizable menu options.</p>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon">&#128172;</div>
+            <h3>Customer Support</h3>
+            <p>Dedicated support team ready to assist you with reservations, special requests, and any questions you may have.</p>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2>Ready to Experience CityWok?</h2>
+        <p>Join us for an unforgettable dining experience</p>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.restaurants') }}" class="btn-large">Book a Table Now</a>
+        {% else %}
+            <a href="{{ url_for('main.register') }}" class="btn-large">Get Started</a>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

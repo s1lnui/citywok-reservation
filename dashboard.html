@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center; margin-bottom: 2rem;">Admin Dashboard</h2>
+
+<div class="stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 3rem;">
+    <div style="background: rgba(139, 0, 0, 0.3); padding: 1.5rem; border-radius: 10px; text-align: center;">
+        <h3 style="color: #ffd700;">{{ total_reservations }}</h3>
+        <p>Total Reservations</p>
+    </div>
+    <div style="background: rgba(139, 0, 0, 0.3); padding: 1.5rem; border-radius: 10px; text-align: center;">
+        <h3 style="color: #ffd700;">{{ active_reservations }}</h3>
+        <p>Active Reservations</p>
+    </div>
+    <div style="background: rgba(139, 0, 0, 0.3); padding: 1.5rem; border-radius: 10px; text-align: center;">
+        <h3 style="color: #ffd700;">{{ total_users }}</h3>
+        <p>Total Users</p>
+    </div>
+    <div style="background: rgba(139, 0, 0, 0.3); padding: 1.5rem; border-radius: 10px; text-align: center;">
+        <h3 style="color: #ffd700;">{{ total_restaurants }}</h3>
+        <p>Restaurants</p>
+    </div>
+</div>
+
+<div class="admin-links" style="text-align: center;">
+    <a href="{{ url_for('main.admin_reservations') }}" class="btn" style="margin: 0.5rem;">Manage Reservations</a>
+    <a href="{{ url_for('main.admin_restaurants') }}" class="btn" style="margin: 0.5rem;">View Restaurants</a>
+</div>
+{% endblock %}

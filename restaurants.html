@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 style="text-align: center; margin-bottom: 2rem;">Restaurants Management</h2>
+
+<div class="restaurants-list">
+    {% for restaurant in restaurants %}
+    <div style="background: rgba(139, 0, 0, 0.3); padding: 2rem; border-radius: 10px; margin-bottom: 2rem;">
+        <h3 style="color: #ffd700;">{{ restaurant.name }}</h3>
+        <p><strong>Address:</strong> {{ restaurant.address }}</p>
+        <p><strong>Phone:</strong> {{ restaurant.phone }}</p>
+        <p><strong>Hours:</strong> {{ restaurant.opening_hours }}</p>
+        <p>{{ restaurant.description }}</p>
+        
+        <h4 style="margin-top: 1rem; color: #ffd700;">Tables:</h4>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+            {% for table in restaurant.tables %}
+            <span style="background: rgba(212, 175, 55, 0.2); padding: 0.5rem 1rem; border-radius: 5px;">
+                {{ table.table_number }} ({{ table.capacity }} guests)
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

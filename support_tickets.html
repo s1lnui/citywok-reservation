@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block title %}Support Tickets - Admin{% endblock %}
+
+{% block content %}
+<style>
+    .tickets-container {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .tickets-table {
+        background: rgba(139, 0, 0, 0.3);
+        border-radius: 15px;
+        padding: 2rem;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: rgba(212, 175, 55, 0.2);
+        color: #ffd700;
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    }
+
+    td {
+        padding: 1rem;
+        color: #d4af37;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+    }
+
+    tr:hover {
+        background: rgba(212, 175, 55, 0.1);
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+
+    .badge-open {
+        background: rgba(76, 175, 80, 0.3);
+        color: #4caf50;
+        border: 1px solid #4caf50;
+    }
+
+    .badge-answered {
+        background: rgba(33, 150, 243, 0.3);
+        color: #2196f3;
+        border: 1px solid #2196f3;
+    }
+
+    .badge-closed {
+        background: rgba(158, 158, 158, 0.3);
+        color: #9e9e9e;
+        border: 1px solid #9e9e9e;
+    }
+
+    .btn-view {
+        padding: 0.5rem 1rem;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #1a0000;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-view:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+    }
+
+    .btn-close {
+        padding: 0.5rem 1rem;
+        background: rgba(139, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+    }
+
+    .btn-close:hover {
+        background: rgba(139, 0, 0, 0.8);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        padding: 2rem;
+        overflow-y: auto;
+    }
+
+    .modal-content {
+        background: #1a1a1a;
+        border: 2px solid #d4af37;
+        border-radius: 15px;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+    }
+
+    .modal-header {
+        color: #ffd700;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .ticket-info {
+        background: rgba(139, 0, 0, 0.2);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+    }
+
+    .ticket-message {
+        background: rgba(45, 31, 31, 0.5);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        color: #ccc;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .response-form textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 1px solid #d4af37;
+        border-radius: 5px;
+        background: #2d1f1f;
+        color: #d4af37;
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .response-form textarea:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-send {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #1a0000;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 1rem;
+    }
+
+    .btn-send:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+    }
+
+    .btn-cancel {
+        padding: 0.75rem 2rem;
+        background: rgba(139, 0, 0, 0.3);
+        color: #d4af37;
+        border: 1px solid #d4af37;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        background: rgba(139, 0, 0, 0.5);
+    }
+</style>
+
+<div class="tickets-container">
+    <div class="page-header">
+        <h2 style="color: #ffd700; font-size: 2rem;">Support Tickets</h2>
+        <p style="color: #d4af37; margin-top: 0.5rem;">Manage customer support requests</p>
+    </div>
+
+    {% if tickets %}
+    <div class="tickets-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ticket #</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                <tr>
+                    <td style="font-weight: bold;">{{ ticket.ticket_number }}</td>
+                    <td>{{ ticket.email }}</td>
+                    <td>{{ ticket.subject }}</td>
+                    <td>
+                        {% if ticket.status == 'open' %}
+                            <span class="badge badge-open">Open</span>
+                        {% elif ticket.status == 'answered' %}
+                            <span class="badge badge-answered">Answered</span>
+                        {% else %}
+                            <span class="badge badge-closed">Closed</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ ticket.created_at.strftime('%b %d, %Y %H:%M') }}</td>
+                    <td>
+                        <button onclick="viewTicket({{ ticket.id }})" class="btn-view">View & Respond</button>
+                        {% if ticket.status != 'closed' %}
+                        <form method="POST" action="{{ url_for('main.close_support_ticket', ticket_id=ticket.id) }}" style="display: inline;">
+                            <button type="submit" class="btn-close" onclick="return confirm('Close this ticket?')">Close</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                
+                <!-- Hidden ticket data for modal -->
+                <div id="ticket-data-{{ ticket.id }}" style="display: none;">
+                    <div class="ticket-number">{{ ticket.ticket_number }}</div>
+                    <div class="ticket-email">{{ ticket.email }}</div>
+                    <div class="ticket-subject">{{ ticket.subject }}</div>
+                    <div class="ticket-message">{{ ticket.message }}</div>
+                    <div class="ticket-response">{{ ticket.admin_response or '' }}</div>
+                    <div class="ticket-status">{{ ticket.status }}</div>
+                </div>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align: center; color: #ccc; font-size: 1.1rem;">No support tickets yet.</p>
+    {% endif %}
+</div>
+
+<!-- Modal for viewing and responding to tickets -->
+<div id="ticketModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span id="modalTicketNumber"></span>
+        </div>
+        
+        <div class="ticket-info">
+            <p style="color: #d4af37; margin-bottom: 0.5rem;"><strong>From:</strong> <span id="modalEmail"></span></p>
+            <p style="color: #d4af37; margin-bottom: 0.5rem;"><strong>Subject:</strong> <span id="modalSubject"></span></p>
+            <p style="color: #d4af37;"><strong>Status:</strong> <span id="modalStatus"></span></p>
+        </div>
+        
+        <h3 style="color: #ffd700; margin-bottom: 1rem;">Customer Message:</h3>
+        <div class="ticket-message" id="modalMessage"></div>
+        
+        <div id="existingResponse" style="display: none;">
+            <h3 style="color: #ffd700; margin-bottom: 1rem;">Your Response:</h3>
+            <div class="ticket-message" id="modalResponse"></div>
+        </div>
+        
+        <div id="responseFormDiv">
+            <h3 style="color: #ffd700; margin-bottom: 1rem;">Send Response:</h3>
+            <form method="POST" id="responseForm" class="response-form">
+                <textarea name="response" placeholder="Type your response here..." required></textarea>
+                <div style="margin-top: 1rem;">
+                    <button type="submit" class="btn-send">Send Response</button>
+                    <button type="button" onclick="closeModal()" class="btn-cancel">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function viewTicket(ticketId) {
+        const data = document.getElementById('ticket-data-' + ticketId);
+        const ticketNumber = data.querySelector('.ticket-number').textContent;
+        const email = data.querySelector('.ticket-email').textContent;
+        const subject = data.querySelector('.ticket-subject').textContent;
+        const message = data.querySelector('.ticket-message').textContent;
+        const response = data.querySelector('.ticket-response').textContent;
+        const status = data.querySelector('.ticket-status').textContent;
+        
+        document.getElementById('modalTicketNumber').textContent = 'Ticket: ' + ticketNumber;
+        document.getElementById('modalEmail').textContent = email;
+        document.getElementById('modalSubject').textContent = subject;
+        document.getElementById('modalMessage').textContent = message;
+        document.getElementById('modalStatus').textContent = status.toUpperCase();
+        
+        // Show existing response if available
+        if (response) {
+            document.getElementById('modalResponse').textContent = response;
+            document.getElementById('existingResponse').style.display = 'block';
+        } else {
+            document.getElementById('existingResponse').style.display = 'none';
+        }
+        
+        // Update form action
+        document.getElementById('responseForm').action = '/admin/support-ticket/' + ticketId + '/respond';
+        
+        // Show modal
+        document.getElementById('ticketModal').style.display = 'block';
+    }
+    
+    function closeModal() {
+        document.getElementById('ticketModal').style.display = 'none';
+        document.getElementById('responseForm').reset();
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('ticketModal').addEventListener('click', function(event) {
+        if (event.target === this) {
+            closeModal();
+        }
+    });
+</script>
+
+{% endblock %}

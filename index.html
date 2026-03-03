@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Parallax Hero Section */
+    .hero {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.8) 0%, rgba(75, 0, 0, 0.9) 100%);
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><circle cx="100" cy="100" r="80" fill="rgba(212,175,55,0.1)"/><circle cx="1100" cy="500" r="120" fill="rgba(212,175,55,0.05)"/></svg>');
+        animation: float 6s ease-in-out infinite;
+        z-index: 0;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(20px); }
+    }
+
+    .hero h1, .hero p, .hero div {
+        position: relative;
+        z-index: 1;
+        animation: slideInDown 0.8s ease-out;
+    }
+
+    .hero p {
+        animation-delay: 0.2s;
+    }
+
+    .hero div {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Scroll Animations */
+    .fade-in {
+        animation: fadeInUp 0.8s ease-out forwards;
+        animation-delay: 0.6s;
+        opacity: 0;
+    }
+
+    @keyframes fadeInUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .fade-in:nth-child(1) { animation-delay: 0.2s; }
+    .fade-in:nth-child(2) { animation-delay: 0.4s; }
+    .fade-in:nth-child(3) { animation-delay: 0.6s; }
+
+    /* Restaurant Cards */
+    .restaurant-card {
+        background: rgba(139, 0, 0, 0.3);
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .restaurant-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .restaurant-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(212, 175, 55, 0.3);
+        border-color: rgba(212, 175, 55, 0.5);
+    }
+
+    .restaurant-card:hover::before {
+        left: 100%;
+    }
+
+    .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-top: 3rem;
+        margin-bottom: 2rem;
+        color: #ffd700;
+        font-size: 2rem;
+        animation: slideInDown 0.8s ease-out;
+    }
+
+    .btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::after {
+        width: 300px;
+        height: 300px;
+    }
+
+    @media (max-width: 768px) {
+        .features {
+            grid-template-columns: 1fr !important;
+        }
+        
+        .hero h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<!-- Hero Section with Parallax -->
+<div class="hero">
+    <h1 style="font-size: 3rem; margin-bottom: 1rem; text-align: center;">Welcome to CityWok</h1>
+    <p style="font-size: 1.2rem; text-align: center; margin-bottom: 2rem; color: #ccc;">Authentic Chinese Cuisine Experience</p>
+    
+    {% if not current_user.is_authenticated %}
+    <div style="text-align: center; margin: 2rem 0;">
+        <a href="{{ url_for('main.info') }}" class="btn" style="margin-right: 1rem;">Info</a>
+        <a href="{{ url_for('main.login') }}" class="btn">Login</a>
+    </div>
+    {% else %}
+    <div style="text-align: center; margin: 2rem 0;">
+        <a href="{{ url_for('main.restaurants') }}" class="btn">Book a Table</a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Locations Section -->
+<h2 class="section-title fade-in">Our Locations</h2>
+
+<div class="features">
+    {% if restaurants %}
+        {% for restaurant in restaurants %}
+        <div class="restaurant-card fade-in">
+            <h3 style="color: #ffd700; margin-bottom: 1rem; font-size: 1.5rem;">{{ restaurant.name }}</h3>
+            <p style="line-height: 1.8; margin-bottom: 1rem;">
+                <strong style="color: #d4af37;">Address:</strong><br>
+                {{ restaurant.address }}<br>
+                <br>
+                <strong style="color: #d4af37;">Phone:</strong><br>
+                {{ restaurant.phone }}<br>
+                <br>
+                <strong style="color: #d4af37;">Hours:</strong><br>
+                {{ restaurant.opening_hours }}
+            </p>
+
+            
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.make_reservation', restaurant_id=restaurant.id) }}" class="btn" style="display: inline-block;">Book a Table</a>
+            {% else %}
+            <a href="{{ url_for('main.login') }}" class="btn" style="display: inline-block;">Login to Book</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+    <p style="text-align: center; color: #ccc; grid-column: 1 / -1;">No restaurants available at the moment.</p>
+    {% endif %}
+</div>
+
+
+
+{% endblock %}

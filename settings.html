@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .settings-container {
+        max-width: 800px;
+        margin: 0 auto;
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .settings-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        animation: slideDown 0.8s ease-out;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .settings-section {
+        background: rgba(139, 0, 0, 0.3);
+        padding: 2rem;
+        border-radius: 15px;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        margin-bottom: 2rem;
+        animation: slideUp 0.8s ease-out backwards;
+    }
+
+    .settings-section:nth-child(2) { animation-delay: 0.1s; }
+    .settings-section:nth-child(3) { animation-delay: 0.2s; }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+        color: #ffd700;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #d4af37;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d4af37;
+        border-radius: 5px;
+        background: #2d1f1f;
+        color: #d4af37;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .submit-btn {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #d4af37 0%, #ffd700 100%);
+        color: #1a0000;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .info-text {
+        color: #999;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+
+    .warning-box {
+        background: rgba(139, 0, 0, 0.2);
+        border: 2px solid rgba(139, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    .warning-box p {
+        color: #ff6b6b;
+        margin: 0;
+    }
+
+    .btn-danger-animated {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #8b0000 0%, #a00 100%);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .btn-danger-animated::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-danger-animated:hover::before {
+        width: 400px;
+        height: 400px;
+    }
+
+    .btn-danger-animated:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(139, 0, 0, 0.5);
+    }
+
+    .btn-cancel {
+        padding: 0.75rem 2rem;
+        background: linear-gradient(135deg, #555 0%, #777 100%);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .btn-cancel::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-cancel:hover::before {
+        width: 400px;
+        height: 400px;
+    }
+
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(85, 85, 85, 0.5);
+    }
+</style>
+
+<div class="settings-container">
+    <div class="settings-header">
+        <h2 style="color: #ffd700; font-size: 2rem;">Account Settings</h2>
+        <p style="color: #d4af37; margin-top: 0.5rem;">Manage your account preferences and security</p>
+    </div>
+
+    <div class="settings-section">
+        <h3 class="section-title">Change Password</h3>
+        <form method="POST">
+            <input type="hidden" name="action" value="change_password">
+            
+            <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" name="current_password" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" name="new_password" class="form-control" required minlength="6">
+                <p class="info-text">Password must be at least 6 characters long</p>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" name="confirm_password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Update Password</button>
+        </form>
+    </div>
+
+    <div class="settings-section">
+        <h3 class="section-title">Email Settings</h3>
+        <form method="POST">
+            <input type="hidden" name="action" value="update_email">
+            
+            <div class="form-group">
+                <label>Current Email</label>
+                <input type="email" class="form-control" value="{{ current_user.email }}" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>New Email</label>
+                <input type="email" name="new_email" class="form-control" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Update Email</button>
+        </form>
+    </div>
+
+    <div class="settings-section">
+        <h3 class="section-title">Account Information</h3>
+        <p style="color: #d4af37; line-height: 1.8;">
+            <strong>Username:</strong> {{ current_user.username }}<br>
+            <strong>Account Created:</strong> {{ current_user.created_at.strftime('%B %d, %Y') }}<br>
+            <strong>Total Reservations:</strong> {{ current_user.reservations|length }}<br>
+            <strong>Account Type:</strong> {{ 'Administrator' if current_user.is_admin else 'Regular User' }}
+        </p>
+    </div>
+
+    {% if not current_user.is_admin %}
+    <div class="settings-section">
+        <h3 class="section-title">Delete Account</h3>
+        
+        {% if current_user.deletion_requested %}
+        <div style="background: rgba(255, 215, 0, 0.1); padding: 1.5rem; border-radius: 10px; border: 2px solid rgba(255, 215, 0, 0.3); margin-bottom: 1rem;">
+            <p style="color: #ffd700; margin: 0; margin-bottom: 0.5rem; font-weight: bold;">
+                Your account deletion request is pending review by an administrator.
+            </p>
+            <p style="color: #d4af37; margin: 0; font-size: 0.9rem;">
+                Requested on: {{ current_user.deletion_requested_at.strftime('%B %d, %Y at %I:%M %p') }}
+            </p>
+            <p style="color: #999; margin-top: 0.5rem; font-size: 0.85rem; font-style: italic;">
+                Reason: {{ current_user.deletion_reason }}
+            </p>
+        </div>
+        
+        <p style="color: #d4af37; margin-bottom: 1rem;">
+            If you've changed your mind, you can cancel your deletion request below.
+        </p>
+        
+        <form method="POST">
+            <input type="hidden" name="action" value="cancel_deletion">
+            <button type="submit" class="btn-cancel" onclick="return confirm('Are you sure you want to cancel your account deletion request?')">
+                Cancel Deletion Request
+            </button>
+        </form>
+        {% else %}
+        <p style="color: #d4af37; margin-bottom: 1.5rem;">
+            If you wish to delete your account, you can submit a deletion request. An administrator will review and process your request.
+        </p>
+        
+        <form method="POST">
+            <input type="hidden" name="action" value="request_deletion">
+            
+            <div class="form-group">
+                <label>Reason for Deletion</label>
+                <textarea name="deletion_reason" class="form-control" rows="4" placeholder="Please explain why you want to delete your account..." required></textarea>
+                <p class="info-text">This information will be reviewed by an administrator</p>
+            </div>
+            
+            <button type="submit" class="btn-danger-animated" onclick="return confirm('Are you sure you want to request account deletion? This action cannot be undone once approved.')">
+                Request Account Deletion
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

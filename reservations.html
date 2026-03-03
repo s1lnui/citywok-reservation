@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .reservations-container {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .reservation-card {
+        background: rgba(139, 0, 0, 0.3);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        border: 2px solid rgba(212, 175, 55, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .reservation-card:hover {
+        border-color: rgba(212, 175, 55, 0.6);
+        box-shadow: 0 5px 20px rgba(212, 175, 55, 0.2);
+    }
+
+    .reservation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .reservation-title {
+        color: #ffd700;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+
+    .status-active {
+        background: rgba(76, 175, 80, 0.3);
+        color: #4caf50;
+        border: 1px solid #4caf50;
+    }
+
+    .status-cancelled {
+        background: rgba(244, 67, 54, 0.3);
+        color: #f44336;
+        border: 1px solid #f44336;
+    }
+
+    .reservation-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .detail-item {
+        color: #d4af37;
+    }
+
+    .detail-label {
+        color: #ffd700;
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    .attendance-section {
+        background: rgba(212, 175, 55, 0.1);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        accent-color: #d4af37;
+    }
+
+    .checkbox-label {
+        color: #ffd700;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #8b0000 0%, #a00 100%);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(139, 0, 0, 0.5);
+    }
+</style>
+
+<div class="reservations-container">
+    <div class="page-header">
+        <h2 style="color: #ffd700; font-size: 2rem;">All Reservations</h2>
+        <p style="color: #d4af37; margin-top: 0.5rem;">Manage all customer reservations</p>
+    </div>
+
+    {% if reservations %}
+    <div class="reservations-list">
+        {% for reservation in reservations %}
+        <div class="reservation-card">
+            <div class="reservation-header">
+                <div class="reservation-title">
+                    {{ reservation.table.restaurant.name }} - {{ reservation.table.table_number }}
+                </div>
+                <span class="status-badge {% if reservation.status == 'active' %}status-active{% else %}status-cancelled{% endif %}">
+                    {{ reservation.status|title }}
+                </span>
+            </div>
+
+            <div class="reservation-details">
+                <div class="detail-item">
+                    <span class="detail-label">User:</span>
+                    {{ reservation.user.username }} ({{ reservation.user.email }})
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Date:</span>
+                    {{ reservation.reservation_date.strftime('%A, %B %d, %Y') }}
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Time:</span>
+                    {{ reservation.reservation_time }}
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Guests:</span>
+                    {{ reservation.guests }}
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Booked:</span>
+                    {{ reservation.created_at.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+            </div>
+
+            <div class="attendance-section">
+                <form method="POST" action="{{ url_for('main.toggle_attendance', reservation_id=reservation.id) }}" style="margin: 0;">
+                    <label class="checkbox-container">
+                        <input type="checkbox" 
+                               {% if reservation.customer_showed_up %}checked{% endif %}
+                               onchange="this.form.submit()">
+                        <span class="checkbox-label">Customer Showed Up</span>
+                    </label>
+                </form>
+                
+                {% if reservation.customer_showed_up %}
+                <span style="color: #4caf50; font-size: 0.9rem;">✓ Customer attended</span>
+                {% else %}
+                <span style="color: #999; font-size: 0.9rem;">Customer did not show up yet</span>
+                {% endif %}
+            </div>
+
+            {% if reservation.status == 'active' %}
+            <a href="{{ url_for('main.cancel_reservation', reservation_id=reservation.id) }}" 
+               class="btn-cancel" 
+               onclick="return confirm('Cancel this reservation?')">
+                Cancel Reservation
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="text-align: center; color: #ccc; font-size: 1.1rem;">No reservations found.</p>
+    {% endif %}
+</div>
+{% endblock %}

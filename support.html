@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Support - CityWok Restaurant{% endblock %}
+
+{% block content %}
+<div class="content-box" style="max-width: 600px; margin: 0 auto;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem; text-align: center; color: #ffd700;">Support</h1>
+    <p style="text-align: center; margin-bottom: 2rem; color: #ccc; font-size: 1.1rem;">Have a question or need help? Contact us using the form below.</p>
+    
+    <form method="POST" action="{{ url_for('main.support') }}" style="background: rgba(45, 31, 31, 0.5); padding: 2rem; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.2);">
+        <div style="margin-bottom: 1.5rem;">
+            <label for="email" style="display: block; margin-bottom: 0.5rem; color: #ffd700; font-weight: bold;">Email Address *</label>
+            <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required 
+                style="width: 100%; padding: 0.75rem; border: 1px solid #d4af37; border-radius: 5px; background: #1a1a1a; color: #d4af37; font-size: 1rem;"
+                placeholder="your@email.com"
+            >
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="subject" style="display: block; margin-bottom: 0.5rem; color: #ffd700; font-weight: bold;">Subject *</label>
+            <input 
+                type="text" 
+                id="subject" 
+                name="subject" 
+                required 
+                style="width: 100%; padding: 0.75rem; border: 1px solid #d4af37; border-radius: 5px; background: #1a1a1a; color: #d4af37; font-size: 1rem;"
+                placeholder="How can we help?"
+            >
+        </div>
+
+        <div style="margin-bottom: 1.5rem;">
+            <label for="message" style="display: block; margin-bottom: 0.5rem; color: #ffd700; font-weight: bold;">Message *</label>
+            <textarea 
+                id="message" 
+                name="message" 
+                required 
+                rows="6"
+                style="width: 100%; padding: 0.75rem; border: 1px solid #d4af37; border-radius: 5px; background: #1a1a1a; color: #d4af37; font-size: 1rem; font-family: Arial, sans-serif; resize: vertical;"
+                placeholder="Please describe your issue or question..."
+            ></textarea>
+        </div>
+
+        <button 
+            type="submit" 
+            style="width: 100%; background: #d4af37; color: #1a1a1a; padding: 0.75rem; border: none; border-radius: 5px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.3s;"
+            onmouseover="this.style.background='#ffd700'; this.style.transform='translateY(-2px)';"
+            onmouseout="this.style.background='#d4af37'; this.style.transform='translateY(0)';"
+        >
+            Send Message
+        </button>
+    </form>
+
+    <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(139, 0, 0, 0.2); border-radius: 10px; text-align: center;">
+        <h3 style="color: #ffd700; margin-bottom: 1rem;">Other Ways to Reach Us</h3>
+        <p style="margin-bottom: 0.5rem;"><strong>Phone:</strong> +(351) 929 071 651</p>
+        <p style="margin-bottom: 0.5rem;"><strong>Email:</strong> c1tywok.reservation@gmail.com</p>
+        <p><strong>Hours:</strong> Tuesday - Sunday 12PM-11PM (Closed Mondays)</p>
+    </div>
+</div>
+{% endblock %}
