@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: citywok-reservation
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn manage:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: MAIL_USERNAME
+        value: c1tywok.reservation@gmail.com
+      - key: MAIL_PASSWORD
+        value: qbbrkqpvrzuclzqt
